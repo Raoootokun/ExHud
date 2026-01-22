@@ -1,0 +1,13 @@
+{
+  "namespace": "common",
+
+  "base_screen": {
+    "low_frequency_rendering": true
+  },
+ 
+
+  "inventory_screen_common": {
+    "force_render_below": true
+  }
+
+}
