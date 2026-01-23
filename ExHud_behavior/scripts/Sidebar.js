@@ -1,4 +1,5 @@
 import { world, system, Player, ItemStack, Block } from "@minecraft/server";
+import { log } from "./lib/Util";
 
 export class Sidebar {
 
@@ -105,6 +106,38 @@ export class Sidebar {
     };
 
     /**
+     * Set Ref
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     * @param {string} baseText 
+     */
+    static setRefAll(player, objectiveId) {
+        const objective = world.scoreboard.getObjective(objectiveId);
+        if(!objective)return 1;
+
+        //DPを取得
+        const oldRawList = player.getDynamicProperty(`sidebar.${objectiveId}`) ?? `[]`;
+        const list = JSON.parse(oldRawList);
+
+        for(const scoreInfo of objective.getScores()) {
+            const text = scoreInfo.participant.displayName;
+            const score = scoreInfo.score;
+
+            //追加済みかどうか
+            const index = list.map(d => d.text).indexOf(text);
+            if(index != -1) {
+                //削除
+                list.splice(index, 1);
+            }
+            list.push({ text:text, score:score });
+        };
+
+        //DPに保存
+        const newRawList = JSON.stringify(list);
+        player.setDynamicProperty(`sidebar.${objectiveId}`, newRawList);
+    };
+
+    /**
      * Show
      * @param {Player} player 
      * @param {string} objectiveId 
@@ -121,28 +154,40 @@ export class Sidebar {
         player.setDynamicProperty(`sidebarSHow`, objectiveId);
     };
 
-    /**
-     * Sort Setting
-     * @param {string} type 
-     */
-    static setSort(type) {
-        if(type != "ascending" && type != "descending")return 1;
+    
 
-        world.setDynamicProperty(`sidebarSort`);
+    
+
+    static setDisplayName(player, objectiveId, displayName) {
+        const objective = world.scoreboard.getObjective(objectiveId);
+        if(!objective)return 1;
+
+        player.setDynamicProperty(`sidebar.${objectiveId}.display`, displayName);
+    }
+
+    static getDisplayName(player, objectiveId) {
+        const objective = world.scoreboard.getObjective(objectiveId);
+        if(!objective)return;
+
+        return `§r` + (player.getDynamicProperty(`sidebar.${objectiveId}.display`) ?? objective.displayName);
     }
 
 
-    /**
-     * 
-     * @param {Player} player 
-     * @returns {string}
-     */
+
     static getShowObjectiveId(player) {
         return player.getDynamicProperty(`sidebarSHow`);
     };
 
-    static getSort() {
-        return world.getDynamicProperty(`sidebarSort`) ?? `ascending`;
+
+
+    static setSort(sortType) {
+        if(sortType != "ascending" && sortType != "descending")return 1;
+
+        world.setDynamicProperty(`sidebarSortType`, sortType);
+    }
+
+    static getSortType() {
+        return world.getDynamicProperty(`sidebarSortType`) ?? `ascending`;
     }
 
 }

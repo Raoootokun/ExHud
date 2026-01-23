@@ -2,7 +2,6 @@ import { world, system, Player, ItemStack, Block } from "@minecraft/server";
 import { log } from "./lib/Util";
 import { Actionbar } from "./Actionbar";
 import { Sidebar } from "./Sidebar";
-import "./command";
 
 const SPLIT_TXT = ":/1/:";
 
@@ -48,7 +47,7 @@ export class ExHud {
         if(!objective)return ``;
 
         //オブジェクト名を取得
-        const objectiveName = `§r` + objective.displayName;
+        const objectiveName = Sidebar.getDisplayName(player, showObjectiveId);
 
         const rawData = player.getDynamicProperty(`sidebar.${showObjectiveId}`);
         if(!rawData)return ``;
@@ -56,8 +55,9 @@ export class ExHud {
         const list = JSON.parse(rawData);
         if(list.length == 0)return ``;
 
-        const sortType = Sidebar.getSort();
-    
+        //並び替え
+        ExHud.sort(list);
+
         let texts = `§r`;
         let scores = `§r`;
 
@@ -68,6 +68,13 @@ export class ExHud {
 
         return texts + SPLIT_TXT + scores + SPLIT_TXT + objectiveName;
 
+    }
+
+    static sort(list) {
+        const sortType = Sidebar.getSortType();
+
+        if(sortType == "ascending")list.sort((a, b) => b.score - a.score);
+        else list.sort((a, b) => a.score - b.score);
     }
     
 };

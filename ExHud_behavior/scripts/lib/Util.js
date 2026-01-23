@@ -83,14 +83,15 @@ export function getSpeed(player) {
  */
 export function getTime() {
     const now = new Date();
-    const time = now.toLocaleString("ja-JP", {
-        timeZone: "Asia/Tokyo",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    });
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const tokyo = new Date(utc + (9 * 60 * 60 * 1000));
 
-    return time;
+    const hh = String(tokyo.getHours()).padStart(2, "0");
+    const mm = String(tokyo.getMinutes()).padStart(2, "0");
+    const ss = String(tokyo.getSeconds()).padStart(2, "0");
+
+
+    return `${hh}:${mm}:${ss}`;
 }
 
 

@@ -8,7 +8,7 @@ const COMMAND_LIST = [
     { //actionbar
         command: {
             name: `${PREFIX}:` + "actionbar",
-            description: "Actionbar",
+            description: "アクションバーを表示します",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
@@ -39,7 +39,7 @@ const COMMAND_LIST = [
     { //sidebar.set
         command: {
             name: `${PREFIX}:` + "sidebar.set",
-            description: "Sidebar Set",
+            description: "スコアをセットします",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
@@ -72,10 +72,80 @@ const COMMAND_LIST = [
         }
     },
 
+    { //sidebar.refset
+        command: {
+            name: `${PREFIX}:` + "sidebar.refset",
+            description: "参照元のスコアをセットします",
+            permissionLevel: CommandPermissionLevel.Any,
+            cheatsRequired: true,
+            mandatoryParameters: [
+                { type: CustomCommandParamType.PlayerSelector, name: "player" },
+                { type: CustomCommandParamType.String, name: "objectiveId" },
+                { type: CustomCommandParamType.String, name: "baseText" },
+            ],
+        },
+        alias: [  ],
+        func: function(origin, ...args) {
+            const players = args[0];
+            const objectiveId = args[1];
+            const baseText = args[2];
+
+            for(const player of players) {
+                const res = Sidebar.setRef(player, objectiveId, baseText);
+
+                if(res == 1)return {
+                    message: `§c"${objectiveId}" ではオブジェクトは見つかりませんでした`,
+                    status: CustomCommandStatus.Failure,
+                };
+                if(res == 2)return {
+                    message: `§c"${baseText}" ではスコアは見つかりませんでした`,
+                    status: CustomCommandStatus.Failure,
+                };
+            };
+            
+            return {
+                message: `${players.map(p => p.name).join(", ")} の ${baseText}(${objectiveId}) を設定しました`,
+                status: CustomCommandStatus.Success,
+            };
+        }
+    },
+
+    { //sidebar.setRefAll
+        command: {
+            name: `${PREFIX}:` + "sidebar.refsetall",
+            description: "参照元のすべてのスコアをセットします",
+            permissionLevel: CommandPermissionLevel.Any,
+            cheatsRequired: true,
+            mandatoryParameters: [
+                { type: CustomCommandParamType.PlayerSelector, name: "player" },
+                { type: CustomCommandParamType.String, name: "objectiveId" },
+            ],
+        },
+        alias: [  ],
+        func: function(origin, ...args) {
+            const players = args[0];
+            const objectiveId = args[1];
+
+            for(const player of players) {
+                const res = Sidebar.setRefAll(player, objectiveId);
+
+                if(res == 1)return {
+                    message: `§c"${objectiveId}" ではオブジェクトは見つかりませんでした`,
+                    status: CustomCommandStatus.Failure,
+                };
+            };
+            
+            return {
+                message: `${players.map(p => p.name).join(", ")} の すべてのスコア(${objectiveId}) を設定しました`,
+                status: CustomCommandStatus.Success,
+            };
+        }
+    },
+
     { //sidebar.reset
         command: {
             name: `${PREFIX}:` + "sidebar.reset",
-            description: "Sidebar Reset",
+            description: "スコアをリセットします",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
@@ -114,7 +184,7 @@ const COMMAND_LIST = [
     { //sidebar.resetAll
         command: {
             name: `${PREFIX}:` + "sidebar.resetall",
-            description: "Sidebar All Reset",
+            description: "スコアをすべてリセットします",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
@@ -146,7 +216,7 @@ const COMMAND_LIST = [
     { //sidebar.show
         command: {
             name: `${PREFIX}:` + "sidebar.show",
-            description: "sidebar.show",
+            description: "サイドバーを表示します",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
@@ -184,47 +254,79 @@ const COMMAND_LIST = [
         }
     },
 
-
-    { //sidebar.setRef
+    { //sidebar.sort
         command: {
-            name: `${PREFIX}:` + "sidebar.setref",
-            description: "Sidebar Ref Set",
+            name: `${PREFIX}:` + "sidebar.sort",
+            description: "スコアの並び順を設定します",
+            permissionLevel: CommandPermissionLevel.Any,
+            cheatsRequired: true,
+            mandatoryParameters: [
+                { type: CustomCommandParamType.Enum, name: "eh:sortType" },
+            ],
+        },
+        alias: [  ],
+        func: function(origin, ...args) {
+            const sortType = args[0];
+
+            const res = Sidebar.setSort(sortType);
+            if(res == 1)return {
+                message: `§c"${sortType}" ではsortTypeは見つかりませんでした`,
+                status: CustomCommandStatus.Failure,
+            };
+
+            return {
+                message: `sortTypeを ${sortType} に設定しました`,
+                status: CustomCommandStatus.Success,
+            };
+        }
+    },
+
+    { //sidebar.display
+        command: {
+            name: `${PREFIX}:` + "sidebar.display",
+            description: "サイドバーの表示名を設定します",
             permissionLevel: CommandPermissionLevel.Any,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
                 { type: CustomCommandParamType.String, name: "objectiveId" },
-                { type: CustomCommandParamType.String, name: "baseText" },
+            ],
+            optionalParameters: [
+                { type: CustomCommandParamType.String, name: "displayName" },
             ],
         },
         alias: [  ],
         func: function(origin, ...args) {
             const players = args[0];
             const objectiveId = args[1];
-            const baseText = args[2];
+            const displayName = args[2];
 
             for(const player of players) {
-                const res = Sidebar.setRef(player, objectiveId, baseText);
-
+                const res = Sidebar.setDisplayName(player, objectiveId, displayName);
                 if(res == 1)return {
                     message: `§c"${objectiveId}" ではオブジェクトは見つかりませんでした`,
                     status: CustomCommandStatus.Failure,
                 };
-                if(res == 2)return {
-                    message: `§c"${baseText}" ではスコアは見つかりませんでした`,
-                    status: CustomCommandStatus.Failure,
-                };
             };
-            
-            return {
-                message: `${players.map(p => p.name).join(", ")} の ${baseText}(${objectiveId}) を設定しました`,
+
+            if(displayName)return {
+                message: `${players.map(p => p.name).join(", ")} の 表示名を ${displayName} に設定しました`,
                 status: CustomCommandStatus.Success,
             };
+            else return {
+                message: `${players.map(p => p.name).join(", ")} の 表示名をリセットしました`,
+                status: CustomCommandStatus.Success,
+            };
+            
         }
     },
+
+
+    
 ];
 
 const ENUM_LIST = {
+    "eh:sortType": [ "ascending", "descending" ],
 };
 
 system.beforeEvents.startup.subscribe(ev => {

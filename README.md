@@ -16,7 +16,8 @@
 `/actionbar <selector> <text> <stayDuration>` - アクションバーを表示
 
 `/sidebar.set <selector> <objectiveId> <text> <score>` - スコアをセット
-`/sidebar.setref <selector> <objectiveId> <baseText>` - バニラのスコアを参照してセット
+`/sidebar.refset <selector> <objectiveId> <baseText>` - バニラのスコアを参照してセット
+`/sidebar.refsetall <selector> <objectiveId>` - バニラのスコアを参照してすべてのセット
 `/sidebar.reset <selector> <objectiveId> <text>` - スコアをリセット
 `/sidebar.resetall <selector> <objectiveId>` - スコアをすべてリセット
 `/sidebar.show <selector> <objectiveId>` - サイドバーを表示
@@ -26,5 +27,6 @@
 # やること
 [] アクションバーで \n が機能しない
 [] アクションバーで rawtext を使用できるようにする
-[] sidebar: ディスプレイネームの変更
-[] sidebar: sortの追加
+[x] sidebar: ディスプレイネームの変更
+[x] sidebar: sortの追加
+[] sidebar: 最大表示数
