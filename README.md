@@ -20,3 +20,11 @@
 `/sidebar.reset <selector> <objectiveId> <text>` - スコアをリセット
 `/sidebar.resetall <selector> <objectiveId>` - スコアをすべてリセット
 `/sidebar.show <selector> <objectiveId>` - サイドバーを表示
+
+`/sidebar.display <selector> <objectiveId> <displayName>` - サイドバーの名前を変更
+
+# やること
+[] アクションバーで \n が機能しない
+[] アクションバーで rawtext を使用できるようにする
+[] sidebar: ディスプレイネームの変更
+[] sidebar: sortの追加
