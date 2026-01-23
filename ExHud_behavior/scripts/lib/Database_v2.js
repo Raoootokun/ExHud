@@ -25,9 +25,12 @@ class WorldDatabase_v2 {
      */
     set(key, value) {
         const processKey = this.#id + ":" + key;
-        WorldDatabase_v2.#map.set(processKey, value);
 
-        this.#save(processKey, value);
+        const saveRes = this.#save(processKey, value);
+        if(!saveRes)return false;
+
+        WorldDatabase_v2.#map.set(processKey, value);
+        return true;
     };
 
     /**
@@ -78,6 +81,9 @@ class WorldDatabase_v2 {
         return keys.map(key => this.get(key));
     }
 
+    /**
+     * @returns {{ key:string, value:any }[]}
+     */
     entreis() {
         const arr = [];
         const keys = this.keys();
@@ -90,13 +96,24 @@ class WorldDatabase_v2 {
         return arr;
     }
 
-    
+
 
     #save(processKey, value) {
-        if(value === undefined)return world.setDynamicProperty(processKey);
+        if(value === undefined) {
+            world.setDynamicProperty(processKey);
+            return true;
+        }
 
-        const strValue = JSON.stringify(value);
-        world.setDynamicProperty(processKey, strValue);
+        try{
+            const strValue = JSON.stringify(value);
+            world.setDynamicProperty(processKey, strValue);
+
+            return true;
+        }catch(e) {
+            console.error("[WorldDatabase_v2] DP save failed:", e);
+
+            return false;
+        };
     }
 
     static load() {
@@ -109,7 +126,7 @@ class WorldDatabase_v2 {
             WorldDatabase_v2.#map.set(dpKey, value);
         }
     };
-}
+};
 
 
 
