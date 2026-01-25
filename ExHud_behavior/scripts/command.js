@@ -9,7 +9,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "actionbar",
             description: "アクションバーを表示します",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -40,7 +40,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.set",
             description: "スコアをセットします",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -76,7 +76,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.refset",
             description: "参照元のスコアをセットします",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -114,7 +114,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.refsetall",
             description: "参照元のすべてのスコアをセットします",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -146,7 +146,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.reset",
             description: "スコアをリセットします",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -185,7 +185,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.resetall",
             description: "スコアをすべてリセットします",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -217,7 +217,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.show",
             description: "サイドバーを表示します",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -232,7 +232,7 @@ const COMMAND_LIST = [
             const objectiveId = args[1];
 
             for(const player of players) {
-                const res = Sidebar.show(player, objectiveId);
+                const res = Sidebar.setShow(player, objectiveId);
 
                 if(res == 1)return {
                     message: `§c"${objectiveId}" ではオブジェクトは見つかりませんでした`,
@@ -258,7 +258,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.sort",
             description: "スコアの並び順を設定します",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.Enum, name: "eh:sortType" },
@@ -285,7 +285,7 @@ const COMMAND_LIST = [
         command: {
             name: `${PREFIX}:` + "sidebar.display",
             description: "サイドバーの表示名を設定します",
-            permissionLevel: CommandPermissionLevel.Any,
+            permissionLevel: CommandPermissionLevel.GameDirectors,
             cheatsRequired: true,
             mandatoryParameters: [
                 { type: CustomCommandParamType.PlayerSelector, name: "player" },
@@ -319,10 +319,7 @@ const COMMAND_LIST = [
             };
             
         }
-    },
-
-
-    
+    }, 
 ];
 
 const ENUM_LIST = {

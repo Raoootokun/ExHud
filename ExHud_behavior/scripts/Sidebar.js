@@ -1,8 +1,8 @@
 import { world, system, Player, ItemStack, Block } from "@minecraft/server";
 import { log } from "./lib/Util";
+import { playerDB, worldDB } from "./main";
 
 export class Sidebar {
-
     /**
      * Set
      * @param {Player} player 
@@ -14,9 +14,8 @@ export class Sidebar {
         const objective = world.scoreboard.getObjective(objectiveId);
         if(!objective)return 1;
 
-        //DPを取得
-        const oldRawList = player.getDynamicProperty(`sidebar.${objectiveId}`) ?? `[]`;
-        const list = JSON.parse(oldRawList);
+        //DBを取得
+        const list = playerDB.get(player, `sidebar.${objectiveId}`) ?? [];
 
         //追加済みかどうか
         const index = list.map(d => d.text).indexOf(text);
@@ -27,9 +26,8 @@ export class Sidebar {
 
         list.push({ text:text, score:score });
 
-        //DPに保存
-        const newRawList = JSON.stringify(list);
-        player.setDynamicProperty(`sidebar.${objectiveId}`, newRawList);
+        //DBに保存
+        playerDB.set(player, `sidebar.${objectiveId}`, list)
 
         return 0;
     };
@@ -44,18 +42,16 @@ export class Sidebar {
         const objective = world.scoreboard.getObjective(objectiveId);
         if(!objective)return 1;
 
-        //DPを取得
-        const oldRawList = player.getDynamicProperty(`sidebar.${objectiveId}`) ?? `[]`;
-        const list = JSON.parse(oldRawList);
+        //DBを取得
+        const list = playerDB.get(player, `sidebar.${objectiveId}`) ?? [];
 
         //list内を検索 & 削除
         const index = list.map(d => d.text).indexOf(text);
         if(index == -1)return 2;
         list.splice(index, 1);
 
-        //DPに保存
-        const newRawList = JSON.stringify(list);
-        player.setDynamicProperty(`sidebar.${objectiveId}`, newRawList);
+        //DBに保存
+        playerDB.set(player, `sidebar.${objectiveId}`, list);
     };
 
     /**
@@ -68,7 +64,7 @@ export class Sidebar {
         if(!objective)return 1;
 
         //削除
-        player.setDynamicProperty(`sidebar.${objectiveId}`);
+        playerDB.delete(player, `sidebar.${objectiveId}`);
     };
 
     /**
@@ -88,9 +84,8 @@ export class Sidebar {
             if(score == undefined)return 2;
         };
         
-        //DPを取得
-        const oldRawList = player.getDynamicProperty(`sidebar.${objectiveId}`) ?? `[]`;
-        const list = JSON.parse(oldRawList);
+        //DBを取得
+        const list = playerDB.get(player, `sidebar.${objectiveId}`) ?? [];
 
         //追加済みかどうか
         const index = list.map(d => d.text).indexOf(baseText);
@@ -100,9 +95,8 @@ export class Sidebar {
         }
         list.push({ text:baseText, score:score });
 
-        //DPに保存
-        const newRawList = JSON.stringify(list);
-        player.setDynamicProperty(`sidebar.${objectiveId}`, newRawList);
+        //DBに保存
+        playerDB.set(player, `sidebar.${objectiveId}`, list);
     };
 
     /**
@@ -115,9 +109,8 @@ export class Sidebar {
         const objective = world.scoreboard.getObjective(objectiveId);
         if(!objective)return 1;
 
-        //DPを取得
-        const oldRawList = player.getDynamicProperty(`sidebar.${objectiveId}`) ?? `[]`;
-        const list = JSON.parse(oldRawList);
+        //DBを取得
+        const list = playerDB.get(player, `sidebar.${objectiveId}`) ?? [];
 
         for(const scoreInfo of objective.getScores()) {
             const text = scoreInfo.participant.displayName;
@@ -132,62 +125,51 @@ export class Sidebar {
             list.push({ text:text, score:score });
         };
 
-        //DPに保存
-        const newRawList = JSON.stringify(list);
-        player.setDynamicProperty(`sidebar.${objectiveId}`, newRawList);
+        //DBに保存
+        playerDB.set(player, `sidebar.${objectiveId}`, list);
     };
-
-    /**
-     * Show
-     * @param {Player} player 
-     * @param {string} objectiveId 
-     */
-    static show(player, objectiveId = undefined) {
-        if(!objectiveId) {
-            player.setDynamicProperty(`sidebarSHow`);
-            return -1;
-        }
-
-        const objective = world.scoreboard.getObjective(objectiveId);
-        if(!objective)return 1;
-
-        player.setDynamicProperty(`sidebarSHow`, objectiveId);
-    };
-
-    
-
-    
+ 
 
     static setDisplayName(player, objectiveId, displayName) {
         const objective = world.scoreboard.getObjective(objectiveId);
         if(!objective)return 1;
 
-        player.setDynamicProperty(`sidebar.${objectiveId}.display`, displayName);
+        playerDB.set(player, `sidebar.${objectiveId}.display`, displayName);
     }
 
     static getDisplayName(player, objectiveId) {
         const objective = world.scoreboard.getObjective(objectiveId);
         if(!objective)return;
 
-        return `§r` + (player.getDynamicProperty(`sidebar.${objectiveId}.display`) ?? objective.displayName);
+        return `§r` + (playerDB.get(player, `sidebar.${objectiveId}.display`) ?? objective.displayName);
     }
 
 
+    static setShow(player, objectiveId = undefined) {
+        if(!objectiveId) {
+            playerDB.delete(player, `sidebarShow`);
+            return -1;
+        }
 
-    static getShowObjectiveId(player) {
-        return player.getDynamicProperty(`sidebarSHow`);
+        const objective = world.scoreboard.getObjective(objectiveId);
+        if(!objective)return 1;
+
+        playerDB.set(player, `sidebarShow`, objectiveId);
     };
 
+    static getShow(player) {
+        return playerDB.get(player, `sidebarShow`);
+    };
 
 
     static setSort(sortType) {
         if(sortType != "ascending" && sortType != "descending")return 1;
 
-        world.setDynamicProperty(`sidebarSortType`, sortType);
+        worldDB.set(`sidebarSortType`, sortType);
     }
 
     static getSortType() {
-        return world.getDynamicProperty(`sidebarSortType`) ?? `ascending`;
+        return worldDB.get(`sidebarSortType`) ?? `ascending`;
     }
 
 }

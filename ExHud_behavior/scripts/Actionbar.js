@@ -1,4 +1,5 @@
 import { world, system, Player, ItemStack, Block } from "@minecraft/server";
+import { playerDB } from "./main";
 
 export class Actionbar {
 
@@ -14,20 +15,17 @@ export class Actionbar {
             stayTick: stayDuration,
             startTick: system.currentTick
         };
-        const rawData = JSON.stringify(data);
 
-        player.setDynamicProperty(`actionbar`, rawData);
+        playerDB.set(player, `actionbar`, data);
     }
 
     static loop(player) {
-        const rawData = player.getDynamicProperty(`actionbar`);
-        if(!rawData)return;
-
-        const data = JSON.parse(rawData);
+        const data = playerDB.get(player, `actionbar`);
+        if(!data)return;
 
         //経過時間の取得
         const tick = system.currentTick - data.startTick;
         //stayTickより多い場合は削除
-        if(tick > data.stayTick) player.setDynamicProperty(`actionbar`);
+        if(tick > data.stayTick) playerDB.delete(player, `actionbar`);
     }
 }

@@ -62,5 +62,5 @@ const systemNum = system.runInterval(() => {
  * @param {any[]} version 
  */
 function reloadLog(name, version) {
-    world.sendMessage(`§e[${getTime()}]§f[${name} v${version.join(".")}] Reload`);
+    world.sendMessage(`§a[${getTime()}]§f[${name} v${version.join(".")}§r] Reload`);
 }

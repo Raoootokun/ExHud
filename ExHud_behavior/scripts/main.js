@@ -1,34 +1,40 @@
 import { world, system, } from "@minecraft/server";
 import { WorldLoad } from "./lib/WorldLoad";
-import { log, Util, getTime } from "./lib/Util";
+import { PlayerDB, WorldDB } from "./lib/Database";
+import { log, Util } from "./lib/Util";
 
-import "./ExHud";
+import "./__ExHud";
 import "./command";
 
-export const VERSION = [ 0, 1, 0 ];
+export const worldDB = new WorldDB("exhud");
+export const playerDB = new PlayerDB("exhud");
+
+export const VERSION = [ 0, 2, 1 ];
 
 WorldLoad.subscribe(ev => {
-    ev.reloadLog(`ExHud`, VERSION);
+    ev.reloadLog(`§7ExHud`, VERSION);
 });
 
-system.runInterval(() => {
-    for(const player of world.getPlayers()) {
-        player.runCommand(`actionbar @s "name: ${player.name}\naa"`);
+// import { ExHud } from "./ExHud";
+// system.runInterval(() => {
+//     const start = new Date(); // 処理開始
 
-        player.runCommand(`sidebar.show @s info`);
-        player.runCommand(`sidebar.display @s info ${player.name}`);
-        player.runCommand(`sidebar.resetall @s info`);
+//     for (const player of world.getPlayers()) {
+//         ExHud.actionbar(player, `name: ${player.name}\nactionbar`);
 
-        player.runCommand(`sidebar.setrefall @s info`);
-        // player.runCommand(`sidebar.set @s info "test/100" 100`);
-        // player.runCommand(`sidebar.set @s info "X: ${player.location.x.toFixed(1)}" -2`);
-        // player.runCommand(`sidebar.set @s info "Y: ${player.location.y.toFixed(1)}" -3`);
-        // player.runCommand(`sidebar.set @s info "Z: ${player.location.z.toFixed(1)}" -4`);
+         
+//         ExHud.sidebarShow(player, "info");
+//         ExHud.sidebarDisplay(player, "info", `${player.name}`);
+//         ExHud.sidebarResetAll(player, "info");
+//         ExHud.sidebarSort(0);
 
-        // for(let i=0; i<5; i++) {
-        //     player.runCommand(`sidebar.set @s info "${i} / Test / Test" ${i}`);
-        // }
+//         for (let i = 0; i < 30; i++) {
+//             ExHud.sidebarSet(player, "info", `Test / ${i}`, i);
+//         }
+//     }
 
+//     const end = new Date(); // 処理終了
+//     const cost = end - start;
 
-    }
-})
+//     // log(`§a[計測]§7: ${cost} ms / ${cost/1000} s`);
+// }, 20); // 20tick = 約1秒

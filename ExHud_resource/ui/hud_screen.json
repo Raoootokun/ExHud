@@ -1,7 +1,207 @@
 {
   "namespace": "hud",
 
+  
   "hud_actionbar_text": {
+    "alpha": 0,
+    "size": [ "100%", "100%" ],
+    "offset": [ 0, 0 ],
+
+    "controls": [
+      {
+        "actionbar_message_panel": {
+          "type": "image",
+          "size": [ "100%c + 12px", "100%c + 5px" ],
+          "offset": [ 0, "50%-68px" ],
+          "texture": "textures/ui/hud_tip_text_background",
+          "alpha": "@hud.anim_actionbar_text_background_alpha_out",
+          "controls": [
+            {
+              "actionbar_message": {
+                "type": "label",
+                "anchor_from": "botom",
+                "anchor_to": "center",
+                "color": "$tool_tip_text",
+                "enable_profanity_filter": true,
+                "shadow": true,
+                "localize": false,
+                "layer": 31,
+                "alpha": "@hud.anim_actionbar_text_alpha_out",
+
+                "property_bag": {
+                  "#string": "$actionbar_text",
+                  "#search": 0,
+                  "#separator": ":/1/:"
+                },
+                "bindings": [
+                  {
+                    "binding_condition": "always",
+                    "binding_type": "view",
+                    "source_property_name": "(#search + 1 * ( not (('%.'+#search+'s') * #string = #string) and (('%.'+#search+'s') * #string = ('%.'+#search+'s') * #string - #separator) ))",
+                    "target_property_name": "#search"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "((('%.'+#search+'s') * #string) - #separator)",
+                    "target_property_name": "#value"
+                  }
+                ],
+                "text": "#value"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "players": {
+          "type": "image",
+          "size": [ "100%cm + 4px", "100%cm" ],
+          "offset": [ "100% - 100%c - 5px", 0 ],
+          // "offset": [ 0, "50% - 30px" ],
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "texture": "textures/ui/Black",
+          "alpha": 0.3,
+          "layer": -100,
+          
+          "controls": [
+            {
+              "players_text": {
+                "property_bag": {
+                  "#string": "$actionbar_text",
+                  "#search": 0,
+                  "#separator": ":/1/:"
+                },
+                "bindings": [
+                  {
+                    "binding_condition": "always",
+                    "binding_type": "view",
+                    "source_property_name": "(#search + 1 * (not (('%.'+#search+'s') * #string = #string) and (('%.'+#search+'s') * #string = ('%.'+#search+'s') * #string - #separator)))",
+                    "target_property_name": "#search"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "(#string - (('%.'+#search+'s') * #string))",
+                    "target_property_name": "#rest1"
+                  },
+                  {
+                    "binding_condition": "always",
+                    "binding_type": "view",
+                    "source_property_name": "(#search2 + 1 * (not (('%.'+#search2+'s') * #rest1 = #rest1) and (('%.'+#search2+'s') * #rest1 = ('%.'+#search2+'s') * #rest1 - #separator)))",
+                    "target_property_name": "#search2"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "((('%.'+#search2+'s') * #rest1) - #separator)",
+                    "target_property_name": "#value2"
+                  }
+
+                ],
+
+                "type": "label",
+                "text": "#value2",
+
+                "controls": [
+                  {
+                    "aa": {
+                      "type": "image",
+                      "size": [ "100% + 4px", "10px" ],
+                      "offset": [ 0, "-50% + 5px" ],
+                      // "anchor_from": "right_right",
+                      // "anchor_to": "right_right",
+                      "texture": "textures/ui/Black",
+                      "alpha": 0.3,
+                      "layer": -100
+                    }
+                  }
+                ] 
+              }
+            }
+            
+          ]
+        }
+      }
+
+      // {
+      //   "players": {
+      //     "anchor_from": "right_middle",
+      //     "anchor_to": "right_middle",
+      //     "type": "image",
+      //     "size": [ "120% + 100%cm + 4px", "100%cm + 0px" ],
+      //     "offset": [ 0, 0 ],
+      //     "texture": "textures/ui/Black",
+      //     "alpha": 0.3,
+      //     "layer": -1,
+          
+      //     "controls": [
+      //       {
+      //         "players_text": {
+      //           "type": "label",
+      //           "color": "$tool_tip_text",
+      //           "enable_profanity_filter": true,
+      //           "shadow": true,
+      //           "localize": false,
+      //           "layer": 100,
+      //           "alpha": "@hud.anim_actionbar_text_alpha_out",
+
+      //           "property_bag": {
+      //             "#string": "$actionbar_text",
+      //             "#search": 0,
+      //             "#separator": ":/1/:"
+      //           },
+      //           "bindings": [
+      //             {
+      //               "binding_condition": "always",
+      //               "binding_type": "view",
+      //               "source_property_name": "(#search + 1 * (not (('%.'+#search+'s') * #string = #string) and (('%.'+#search+'s') * #string = ('%.'+#search+'s') * #string - #separator)))",
+      //               "target_property_name": "#search"
+      //             },
+      //             {
+      //               "binding_type": "view",
+      //               "source_property_name": "(#string - (('%.'+#search+'s') * #string))",
+      //               "target_property_name": "#rest1"
+      //             },
+      //             {
+      //               "binding_condition": "always",
+      //               "binding_type": "view",
+      //               "source_property_name": "(#search2 + 1 * (not (('%.'+#search2+'s') * #rest1 = #rest1) and (('%.'+#search2+'s') * #rest1 = ('%.'+#search2+'s') * #rest1 - #separator)))",
+      //               "target_property_name": "#search2"
+      //             },
+      //             {
+      //               "binding_type": "view",
+      //               "source_property_name": "((('%.'+#search2+'s') * #rest1) - #separator)",
+      //               "target_property_name": "#value2"
+      //             }
+
+      //           ],
+
+      //           "anchor_from": "left_middle",
+      //           "anchor_to": "left_middle",
+      //           "text": "TestTest",
+      //           "offset": [ 0, 0 ]
+      //         }
+      //       }
+      //     ]
+      //   }
+      // }
+    ]
+  },
+ 
+
+
+
+
+
+
+  
+  "third_party_server_screen": {
+		"force_render_below": true
+	}
+  
+}
+
+/*
+"hud_actionbar_text": {
     "alpha": 0,
     "size": [ "100%", "100%" ],
 
@@ -168,9 +368,12 @@
                         
                         {
                           "sideber_title": {
-                            "anchor_from": "top_middle",
-                            "anchor_to": "top_middle",
-                            "offset": [ "25%", 0 ],
+                            "anchor_from": "top_center",
+                            "anchor_to": "top_center",
+                            "offset": [ "25%", "-50% + 5px" ],
+                            // "anchor_from": "top_middle",
+                            // "anchor_to": "top_middle",
+                            // "offset": [ "25%", 0 ],
 
                             "type": "label",
                             "property_bag": {
@@ -258,16 +461,4 @@
     ]
   },
 
- 
-
-
-
-
-
-
-  
-  "third_party_server_screen": {
-		"force_render_below": true
-	}
-  
-}
+*/

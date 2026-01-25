@@ -1,16 +1,16 @@
 {
   "format_version": 2,
   "header": {
-    "name": "ExHud Resource [ver1.0.0]",
+    "name": "ExHud Resource [ver0.2.0]",
     "description": "",
-    "uuid": "64de435d-f324-48aa-44c6-914d38975492",
-    "version": [ 1, 0, 0 ],
+    "uuid": "64de435d-f546-48aa-44c6-914d38975492",
+    "version": [ 0, 2, 0 ],
     "min_engine_version": [ 1, 21, 130 ]
   },
   "modules": [
     {
       "type": "resources",
-      "uuid": "bb0aa537-c112-1165-4a32-793e96fad0b1",
+      "uuid": "bb0aa537-c647-1165-4a32-793e96fad0b1",
       "version": [ 1, 0, 0 ]
     }
   ]

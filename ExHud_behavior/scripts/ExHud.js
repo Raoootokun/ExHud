@@ -1,84 +1,89 @@
-import { world, system, Player, ItemStack, Block } from "@minecraft/server";
-import { log } from "./lib/Util";
-import { Actionbar } from "./Actionbar";
-import { Sidebar } from "./Sidebar";
+import { world, system, Player, } from "@minecraft/server";
 
-const SPLIT_TXT = ":/1/:";
+let overworld;
+system.run(() => {
+    overworld = world.getDimension("overworld");
+});
 
 export class ExHud {
     /**
-     * 常時実行
+     * @param {Player} player 
+     * @param {string} text 
      */
-    static loop() {
-        for(const player of world.getPlayers()) {
-            //アクションバーのstayDurationチェック
-            Actionbar.loop(player);
-
-            const actionbarText = ExHud.getActionbarText(player);
-            const sidebarText = ExHud.getSidebarText(player);
-            if(!actionbarText && !sidebarText)continue;
-            
-            player.onScreenDisplay.setActionBar(actionbarText + SPLIT_TXT + sidebarText);
-        };
+    static actionbar(player, text) {
+        player.runCommand(`eh:actionbar @s "${text}"`);
     }
 
     /**
-     * アクションバーに表示するテキストを取得
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     * @param {string} text 
+     * @param {number} score 
      */
-    static getActionbarText(player) {
-        const rawData = player.getDynamicProperty(`actionbar`);
-        if(!rawData)return `§r`;
-
-        const data = JSON.parse(rawData);
-        const text = data.text;
-
-        return `§r` + text;
+    static sidebarSet(player, objectiveId, text, score) {
+        player.runCommand(`eh:sidebar.set @s ${objectiveId} "${text}" ${score}`);
     }
 
     /**
-     * サイドバーに表示するテキストを取得
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     * @param {string} baseText 
      */
-    static getSidebarText(player) {
-        const showObjectiveId = Sidebar.getShowObjectiveId(player);
-        if(!showObjectiveId)return ``;
-
-        //オブジェクトが存在しているか
-        const objective = world.scoreboard.getObjective(showObjectiveId);
-        if(!objective)return ``;
-
-        //オブジェクト名を取得
-        const objectiveName = Sidebar.getDisplayName(player, showObjectiveId);
-
-        const rawData = player.getDynamicProperty(`sidebar.${showObjectiveId}`);
-        if(!rawData)return ``;
-
-        const list = JSON.parse(rawData);
-        if(list.length == 0)return ``;
-
-        //並び替え
-        ExHud.sort(list);
-
-        let texts = `§r`;
-        let scores = `§r`;
-
-        for(const scoreInfo of list) {
-            texts += `\n§r${scoreInfo.text}`;
-            scores += `\n§r${scoreInfo.score}`;
-        };
-
-        return texts + SPLIT_TXT + scores + SPLIT_TXT + objectiveName;
-
+    static sidebarRefSet(player, objectiveId, baseText) {
+        player.runCommand(`eh:sidebar.refset @s ${objectiveId} "${baseText}"`);
     }
 
-    static sort(list) {
-        const sortType = Sidebar.getSortType();
+    /**
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     */
+    static sidebarRefSetAll(player, objectiveId) {
+        player.runCommand(`eh:sidebar.refsetall @s ${objectiveId}`);
+    }
 
-        if(sortType == "ascending")list.sort((a, b) => b.score - a.score);
-        else list.sort((a, b) => a.score - b.score);
+    /**
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     * @param {string} text 
+     */
+    static sidebarReset(player, objectiveId, text) {
+        player.runCommand(`eh:sidebar.reset @s ${objectiveId} "${baseText}"`);
+    }
+
+    /**
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     */
+    static sidebarResetAll(player, objectiveId) {
+        player.runCommand(`eh:sidebar.resetall @s ${objectiveId}`);
+    }
+
+    /**
+     * @param {Player} player 
+     * @param {string} objectiveId 
+     * @param {string} displayName 
+     */
+    static sidebarDisplay(player, objectiveId, displayName = undefined) {
+        if(displayName == undefined) player.runCommand(`eh:sidebar.display @s ${objectiveId}`);
+        else player.runCommand(`eh:sidebar.display @s ${objectiveId} "${displayName}"`);
+        
+    }
+
+    /**
+     * @param {Player} player 
+     * @param {string} objectiveId
+     */
+    static sidebarShow(player, objectiveId = undefined) {
+        if(objectiveId != undefined) player.runCommand(`sidebar.show @s ${objectiveId}`);
+        else player.runCommand(`eh:sidebar.show @s`);
+    }
+
+    /**
+     * @param {number} sortNumber
+     */
+    static sidebarSort(sortNumber) {
+        if(sortNumber == 0)overworld.runCommand(`eh:sidebar.sort ascending`);
+        else if(sortNumber == 1) overworld.runCommand(`eh:sidebar.sort descending`);
     }
     
 };
-
-system.runInterval(() => {
-    ExHud.loop();
-});
